@@ -78,10 +78,10 @@ def get_groups():
 
 
 # endpoint to get user detail by id
-@app.route("/user/<id>", methods=["GET"])
-def user_detail(id):
-    user = User.query.get(id)
-    return user_schema.jsonify(user)
+@app.route("/groups/<id>", methods=["GET"])
+def group_detail(id):
+    groups = group.query.get(id)
+    return group_schema.jsonify(groups)
 
 
 # endpoint to update user
