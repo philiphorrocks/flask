@@ -2,25 +2,30 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relation, sessionmaker
 from flask_marshmallow import Marshmallow
+import datetime
 import os
+
+DateTime='date'
 
 app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'inventory.sqlite')
+
+# create an instances of our web application and set path of our SQLite uri
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
-DateTime='date'
 
+# define a model called group
 class group(db.Model):
 
     __tablename__ = 'groups'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     group_name = db.Column(db.String(80))
-    group_date = db.Column(db.Integer)
+    group_date = db.Column(db.DateTime, default=datetime.datetime.now())
     group_host = db.Column(db.String(80))
 
-    def __init__(self, group_name=None, group_date=None, group_host=None):
+    def __init__(self, group_name=None, group_host=None, group_date=None):
         self.group_name = group_name
         self.group_date = group_date
         self.group_host = group_host
@@ -28,22 +33,25 @@ class group(db.Model):
 
 class groupSchema(ma.Schema):
     class Meta:
-        fields = ('group_name', 'group_date', 'group_host')
+        # Fields to expose
+        fields = ('group_name', 'group_host', 'group_date')
 
 group_schema = groupSchema()
 groups_schema = groupSchema(many=True)
 
+# ***Needs to be run from Python interactive shell***
+# from app import db
+# db.create_all()
 
-# endpoint to create new user
+# endpoint to create new group
 @app.route("/add", methods=["POST"])
 
 def add_group():
 
-    g = request.json['group_name']
-    d = request.json['group_date']
-    h = request.json['group_host']
+    name = request.json['group_name']
+    host = request.json['group_host']
 
-    new_group = group(g, d, h)
+    new_group = group(name,host)
 
     db.session.add(new_group)
     db.session.commit()
@@ -58,37 +66,43 @@ def get_groups():
     result = groups_schema.dump(all_groups)
     return jsonify(result.data)
 
+# endpoint to get detail by id
+@app.route("/listID/<id>", methods=["GET"])
+def group_detailID(id):
 
-# endpoint to get user detail by id
-@app.route("/groups/<string:name>", methods=["GET"])
-def group_detail(name):
-    print(name)
+    group_id = group.query.get(id)
+    return group_schema.jsonify(group_id)
+
+
+# endpoint to get detail by group
+@app.route("/group/<string:name>", methods=["GET"])
+def group_detailName(name):
+
     groups = group.query.filter_by(group_name=name)
     return groups_schema.jsonify(groups)
 
 
-# endpoint to update user
-@app.route("/groups/<id>", methods=["PUT"])
+# endpoint to update group by id
+@app.route("/update/<id>", methods=["PUT"])
 def group_update(id):
-    group = group.query.get(id)
-    host = request.json['host']
-    email = request.json['email']
+    gp = group.query.get(id)
 
-    user.email = email
-    user.username = username
+    gp.group_name = request.json['group_name']
+    gp.group_host = request.json['group_host']
+
 
     db.session.commit()
-    return user_schema.jsonify(user)
+    return group_schema.jsonify(group)
 
 
-# endpoint to delete user
-@app.route("/groups/<id>", methods=["DELETE"])
-def user_delete(id):
-    user = User.query.get(group_name)
-    db.session.delete(user)
+# endpoint to delete id
+@app.route("/delete/<id>", methods=["DELETE"])
+def id_delete(id):
+    del_id = group.query.get(id)
+    db.session.delete(del_id)
     db.session.commit()
 
-    return user_schema.jsonify(user)
+    return group_schema.jsonify(group)
 
 
 if __name__ == '__main__':
