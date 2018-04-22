@@ -1,3 +1,6 @@
+# Ptyhon Resfful API - Annsible compatible 
+#  v .04 - Phil H
+
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relation, sessionmaker
@@ -30,7 +33,7 @@ class group(db.Model):
         self.group_date = group_date
         self.group_host = group_host
 
-
+# Generate marshmallow Schemas from your model
 class groupSchema(ma.Schema):
     class Meta:
         # Fields to expose

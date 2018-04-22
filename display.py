@@ -1,7 +1,7 @@
 # Quickly query DB using SQLAlchemy
 #  v .04 - Phil H
 
-
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import inspect
@@ -9,9 +9,10 @@ from sqlalchemy import MetaData
 from sqlalchemy import Table
 from sqlalchemy.ext.declarative import declarative_base
 
+basedir = os.path.abspath(os.path.dirname(__file__))
+
 # # # # # # # # # # # # # # # # # #
-#
-# Set SQLAlchemy connection details
+#  Set SQLAlchemy connection details
 #
 # # # # # # # # # # # # # # # # # #
 
