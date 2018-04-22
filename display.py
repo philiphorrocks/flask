@@ -31,7 +31,7 @@ session = Session()
 
 # # # # # # # # # # # # # # # # # #
 #  Get info about DB (Table Name and
-#                     colunm names)
+#                     column names)
 # # # # # # # # # # # # # # # # # #
 
 def getDBInfo():
@@ -44,13 +44,13 @@ def getDBInfo():
 
             # Get column information
             for column_name in inspector.get_columns(table_name):
-                 i = 0
 
                  print("Column: ")
                  print(column_name)
 
     except:
         print("Error: Could not retrive DB schema")
+
 
 # # # # # # # # # # # # # # # # # # #
 #   Dump all data in DB table
