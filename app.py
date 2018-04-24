@@ -6,7 +6,6 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relation, sessionmaker
-from flask_marshmallow import Marshmallow
 from models import db, group, groupSchema
 import os
 
@@ -14,9 +13,8 @@ app = Flask(__name__)
 
 db.init_app(app)
 
+app.config.from_object('config.BaseConfig')
 
-basedir = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'inventory.sqlite')
 
 group_schema = groupSchema()
 groups_schema = groupSchema(many=True)
