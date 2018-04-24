@@ -7,27 +7,19 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relation, sessionmaker
 from flask_marshmallow import Marshmallow
-from models import db, group
+from models import db, group, groupSchema
 import os
 
 app = Flask(__name__)
 
 db.init_app(app)
-ma = Marshmallow(app)
+
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'inventory.sqlite')
 
-
-# Generate marshmallow Schemas from your model to handle serialisation
-class groupSchema(ma.Schema):
-    class Meta:
-        # Fields to expose
-        fields = ('group_name', 'group_host', 'group_date')
-
 group_schema = groupSchema()
 groups_schema = groupSchema(many=True)
-
 
 
 # endpoint to create new group
