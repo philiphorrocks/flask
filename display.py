@@ -1,5 +1,7 @@
+#--------------------------------------
 # Quickly query DB using SQLAlchemy
 #  v .04 - Phil H
+#--------------------------------------
 
 import os
 from sqlalchemy import create_engine
@@ -11,10 +13,10 @@ from sqlalchemy.ext.declarative import declarative_base
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-# # # # # # # # # # # # # # # # # #
+# ------------------------------------
 #  Set SQLAlchemy connection details
 #
-# # # # # # # # # # # # # # # # # #
+# ------------------------------------
 
 # Create DB engine conenction
 engine = create_engine('sqlite:///inventory.sqlite', echo=False)
@@ -29,10 +31,10 @@ inspector = inspect(engine)
 Session = sessionmaker(bind=engine)
 session = Session()
 
-# # # # # # # # # # # # # # # # # #
+# ------------------------------------
 #  Get info about DB (Table Name and
 #                     column names)
-# # # # # # # # # # # # # # # # # #
+# ------------------------------------
 
 def getDBInfo():
 
@@ -52,10 +54,10 @@ def getDBInfo():
         print("Error: Could not retrive DB schema")
 
 
-# # # # # # # # # # # # # # # # # # #
+# -----------------------------------
 #   Dump all data in DB table
 #
-# # # # # # # # # # # # # # # # # # #
+# -----------------------------------
 
 def dumpData():
 

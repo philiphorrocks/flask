@@ -1,39 +1,25 @@
-# Ptyhon Resfful API - Annsible compatible 
+# ------------------------------------------
+# Python Resfful API - Annsible compatible
 #  v .04 - Phil H
+# ------------------------------------------
 
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relation, sessionmaker
 from flask_marshmallow import Marshmallow
-import datetime
+from models import db, group
 import os
 
-DateTime='date'
-
 app = Flask(__name__)
+
+db.init_app(app)
+ma = Marshmallow(app)
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'inventory.sqlite')
 
-# create an instances of our web application and set path of our SQLite uri
-db = SQLAlchemy(app)
-ma = Marshmallow(app)
 
-# define a model called group
-class group(db.Model):
-
-    __tablename__ = 'groups'
-
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    group_name = db.Column(db.String(80))
-    group_date = db.Column(db.DateTime, default=datetime.datetime.now())
-    group_host = db.Column(db.String(80))
-
-    def __init__(self, group_name=None, group_host=None, group_date=None):
-        self.group_name = group_name
-        self.group_date = group_date
-        self.group_host = group_host
-
-# Generate marshmallow Schemas from your model
+# Generate marshmallow Schemas from your model to handle serialisation
 class groupSchema(ma.Schema):
     class Meta:
         # Fields to expose
@@ -42,9 +28,7 @@ class groupSchema(ma.Schema):
 group_schema = groupSchema()
 groups_schema = groupSchema(many=True)
 
-# ***Needs to be run from Python interactive shell***
-# from app import db
-# db.create_all()
+
 
 # endpoint to create new group
 @app.route("/add", methods=["POST"])
@@ -65,6 +49,7 @@ def add_group():
 # endpoint to show all groups
 @app.route("/groups", methods=["GET"])
 def get_groups():
+
     all_groups = group.query.all()
     result = groups_schema.dump(all_groups)
     return jsonify(result.data)
